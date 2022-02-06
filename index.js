@@ -6,13 +6,13 @@ var fs = require('fs');
 var https = require('https');
 
 ``
-
+//Midelware
 var cors = require('cors')
 
 app.use(cors())
 
 const PUERTO = 5000;
-// const PUERTOY = 443;
+
 
 https.createServer({
 
@@ -21,28 +21,9 @@ https.createServer({
     ca: fs.readFileSync('/etc/letsencrypt/live/www.logistictodo.com/chain.pem', "utf8")
 
 
-
 }, app).listen(PUERTO, function () {
     console.log('Servidor https Seguro corriendo en el puerto 5000 Esperando peticiones');
 });
-
-//INSTANCIA PARA EL PUERTO 443 DE YAPPY
-
-// https.createServer({
-
-//     cert: fs.readFileSync('/etc/letsencrypt/live/www.logistictodo.com/cert.pem', "utf8"),
-//     key: fs.readFileSync('/etc/letsencrypt/live/www.logistictodo.com/privkey.pem', "utf8"),
-//     ca: fs.readFileSync('/etc/letsencrypt/live/www.logistictodo.com/chain.pem', "utf8")
-
-
-
-// }, app).listen(PUERTOY, function () {
-//     console.log('Servidor https Seguro corriendo en el puerto 443 Esperando peticiones');
-// });
-
-
-
-
 
 
 var allowlist = ['https://www.logistictodo.com']
@@ -56,10 +37,9 @@ var corsOptionsDelegate = function (req, callback) {
         corsOptions = {
             origin: false
         } // disable CORS for this request
-    }
-    callback(null, corsOptions) // callback expects two parameters: error and options
+    } callback(null, corsOptions) // callback expects two parameters: error and options
 }
-
+//Rutas 
 app.get('/:id', cors(corsOptionsDelegate), fleets.id, function (req, res, next) {
     console.log('although this matches')
     next()
@@ -175,39 +155,37 @@ app.get('/user25/:pa', cors(corsOptionsDelegate), fleets.veinticinco, function (
 app.get('/user26/:pa', cors(corsOptionsDelegate), fleets.veintiseis, function (req, res, next) {
     console.log('although this matches')
     next()
-}) 
+})
 
 app.get('/user27/:pa', cors(corsOptionsDelegate), fleets.veintisiete, function (req, res, next) {
     console.log('although this matches')
     next()
-}) 
+})
 
 app.get('/user28/:oid/:op/:mo/:co', cors(corsOptionsDelegate), fleets.veintiocho, function (req, res, next) {
     console.log('although this matches')
     next()
-}) 
+})
 
 app.get('/user29/:oid/:st/:hs/:do/:co/:fe', cors(corsOptionsDelegate), fleets.veintinueve, function (req, res, next) {
     console.log('although this matches')
     next()
-}) 
+})
 
 app.get('/user30/:op/:lat/:lon', cors(corsOptionsDelegate), fleets.treinta, function (req, res, next) {
     console.log('although this matches')
     next()
-}) 
+})
 
 app.get('/user99/:pa', cors(corsOptionsDelegate), fleets.noventaynueve, function (req, res, next) {
     console.log('although this matches')
     next()
 })
 
-app.get('/api/pagosbg',cors(corsOptionsDelegate),fleets.pagosbg, function (req, res, next) {
-        console.log('although this matches')
-        next()
-    }
+app.get('/api/pagosbg', cors(corsOptionsDelegate), fleets.pagosbg, function (req, res, next) {
+    console.log('although this matches')
+    next()
+});
 
-  );
-  
 
-//Finn 
+// Pablo Luces
