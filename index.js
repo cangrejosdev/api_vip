@@ -206,17 +206,7 @@ app.get('/api/pagosbg',cors(corsOptionsDelegate),fleets.pagosbg, function (req, 
         console.log('although this matches')
         next()
     }
-    // (req, res) => {
-    //  var status = req.query.status;
-    //  var confitmayionNumber = req.query.confirmationNumber;
-    //  var hash = req.query.hash;
-    //  var domain = req.query.domain;
-    //  var orderId= req.query.orderId;
 
-    //  console.log(status);
-    //  console.log(confitmayionNumber);
-    //  res.send(console.log('pagosbg'));
-    // }
   );
   
 
