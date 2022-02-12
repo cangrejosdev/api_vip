@@ -13,7 +13,6 @@ app.use(cors())
 
 const PUERTO = 5000;
 
-
 https.createServer({
 
     cert: fs.readFileSync('/etc/letsencrypt/live/www.logistictodo.com/cert.pem', "utf8"),
@@ -183,8 +182,8 @@ app.get('/user99/:pa', cors(corsOptionsDelegate), fleets.noventaynueve, function
 })
 
 app.get('/api/pagosbg', cors(corsOptionsDelegate), fleets.pagosbg, function (req, res, next) {
-    console.log('although this matches')
-    next()
+     console.log('although this matches')
+     next()
 });
 
 

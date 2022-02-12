@@ -1,5 +1,9 @@
 var sql = require("mssql");
+var yappy = require('yappy-node-back-sdk');
+var https = require('https');
+var bodyParser = require('body-parser');
 
+const URL = 'https://www.logistictodo.com';
 var config = {
     "server": "104.238.110.124\\empresascasanova",
     "user": "sa",
@@ -10,6 +14,9 @@ var config = {
     "requestTimeout": 300000,
     "stream": true,
 };
+
+var payment = yappy.createClient('f2dd0c7bf274548b0968159dfde4a9f7', 'QkdfNzAwNmVmZjE0N2Y3MDFhN2RmZjcuM3lZUkZFcExtdERHTXlNQ0RGaEI4aTlxaVYzSEhucFRHQVhteHUwRA==');
+
 // var sql = require("mssql");
 
 // var config = {
@@ -608,25 +615,50 @@ exports.treinta = function (req, res) {
 }
 
 
-exports.pagosbg = function (req, res) {
-    var st  = req.query.status;
-    var cn  = req.query.confirmationNumber;
-    var ha  = req.query.hash;
-    var dom = req.query.domain;     
-    var or  = req.query.orderId;
-   
-    sql.close();
-    sql.connect(config, function (err) {
-        if (err) console.log(err);
-        var request = new sql.Request();
-        request.query('yappy_backend_order_recibida' + "'" + or + "','" + st + "','" + ha+ "','" + dom +"','" + cn +"'", function (err, result) {
-            if (err) console.log(err)
-            console.log(result);
-            res.send(result.recordset);
-        });
+ exports.pagosbg = function (req, res) {
+     var st  = req.query.status;
+     var cn  = req.query.confirmationNumber;
+     var ha  = req.query.hash;
+     var dom = req.query.domain;
+     var or  = req.query.orderId;
 
-    });
-}
+    const success = payment.validateHash(req.query);
+    if (success === true) {
+      const date_ob = new Date();
+      let year = date_ob.getFullYear();
+      let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+      let date = ("0" + date_ob.getDate()).slice(-2);
+
+       https.get(`${URL}:5000/user29/${req.query.orderId}/${req.query.status}/${req.query.hash}/${req.query.domain}/${req.query.confirmationNumber}/${year}-${month}-${date}`, (resp) => {
+         let data = '';
+         resp.on('data', (chunk) => {
+             data += chunk;
+         });
+
+         resp.on('end', async() => {
+             // console.log(JSON.parse(data));
+             sql.close();
+             sql.connect(config, function (err) {
+                if (err) console.log(err);
+                var request = new sql.Request();
+                request.query('yappy_backend_order_recibida' + "'" + or + "','" + st + "','" + ha+ "','" + dom +"','" + cn +"'", function (err, result) {
+                    if (err) console.log(err)
+                    console.log(result);
+                    // res.send(result.recordset);
+                   res.status(200).send( {success: true } );
+                });
+       	      });
+              // res.status(200).json({ success: true });
+         });
+
+       }).on("error", (err) => {
+            console.log("Error: " + err.message);
+            res.status(406).json({ success: false });
+        });
+    } else {
+      res.status(406).send({ success: false });
+    }
+ }
 
 
 
